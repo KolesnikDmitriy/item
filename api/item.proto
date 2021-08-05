@@ -1,0 +1,16 @@
+syntax = "proto3";
+package item;
+option go_package = "api;item";
+
+service Item {
+    rpc Item(ItemRequest) returns (ItemResponce);
+}
+
+message ItemRequest{
+    int64 id = 1;
+}
+
+message ItemResponce{
+    string title = 1;
+    string description = 2;
+}
