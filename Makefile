@@ -10,3 +10,7 @@ generate:
 .PHONY: run
 run:
 	go run ./cmd/item/main.go
+
+.PHONY: test
+test:
+	go test ./test/tests -count=1 -v
