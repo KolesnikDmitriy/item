@@ -7,9 +7,9 @@ import (
 	pb "github.com/KolesnikDmitriy/item/pkg/api"
 )
 
-func (s *ItemService) Item(ctx context.Context, in *pb.ItemRequest) (*pb.ItemResponce, error) {
+func (s *ItemService) GetItem(ctx context.Context, in *pb.GetItemRequest) (*pb.GetItemResponce, error) {
 	if in.Id <= 0 {
 		return nil, errors.New("wrong id")
 	}
-	return &pb.ItemResponce{Title: "Book", Description: "Very Great Book"}, nil
+	return &pb.GetItemResponce{Title: "Book", Description: "Very Great Book"}, nil
 }

@@ -27,8 +27,8 @@ func New(host string, timeout time.Duration) (*ItemClient, *grpc.ClientConn) {
 	return &client, conn
 }
 
-func (i *ItemClient) Item(in *item.ItemRequest) (*item.ItemResponce, error) {
+func (i *ItemClient) Item(in *item.GetItemRequest) (*item.GetItemResponce, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), i.timeout)
 	defer cancel()
-	return i.ItemClient.Item(ctx, in)
+	return i.ItemClient.GetItem(ctx, in)
 }

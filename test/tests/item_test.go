@@ -15,7 +15,7 @@ func TestItem(t *testing.T) {
 	t.Run("valid id", func(t *testing.T) {
 		t.Parallel()
 
-		req := item.ItemRequest{Id: 1}
+		req := item.GetItemRequest{Id: 1}
 
 		res, err := api.Item(&req)
 
@@ -27,7 +27,7 @@ func TestItem(t *testing.T) {
 	t.Run("empty request", func(t *testing.T) {
 		t.Parallel()
 
-		req := item.ItemRequest{}
+		req := item.GetItemRequest{}
 
 		_, err := api.Item(&req)
 
