@@ -2,8 +2,14 @@ syntax = "proto3";
 package item;
 option go_package = "github.com/KolesnikDmitriy/item/api;item";
 
+import "google/api/annotations.proto";
+
 service Item {
-    rpc GetItem(GetItemRequest) returns (GetItemResponce);
+    rpc GetItem(GetItemRequest) returns (GetItemResponce) {
+        option (google.api.http) = {
+            get: "/v1/item/{id}"
+        };
+    };
 }
 
 message GetItemRequest{

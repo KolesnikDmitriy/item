@@ -5,8 +5,14 @@ version:
 
 .PHONY: generate
 generate:
-	protoc --go_out=pkg --go_opt=paths=source_relative \
-		--go-grpc_out=pkg --go-grpc_opt=paths=source_relative \
+	protoc -I ./ \
+		--go_out ./pkg --go_opt paths=source_relative \
+    	--go-grpc_out ./pkg --go-grpc_opt paths=source_relative \
+		--grpc-gateway_out ./pkg \
+		--grpc-gateway_opt logtostderr=true \
+		--grpc-gateway_opt paths=source_relative \
+		--openapiv2_out ./pkg \
+		--openapiv2_opt logtostderr=true \
 		api/item.proto
 
 .PHONY: run

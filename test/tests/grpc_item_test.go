@@ -9,7 +9,7 @@ import (
 	item "github.com/KolesnikDmitriy/item/pkg/api"
 )
 
-func TestItem(t *testing.T) {
+func TestItemGRPC(t *testing.T) {
 	t.Parallel()
 
 	t.Run("valid id", func(t *testing.T) {
