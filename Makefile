@@ -21,4 +21,8 @@ run:
 
 .PHONY: test
 test:
-	go test ./test/tests -count=1 -v
+	go test ./test/tests -count=1
+
+.PHONY: test-ci
+test-ci:
+	go test ./test/tests -count=1 -v -json
