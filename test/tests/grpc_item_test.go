@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -24,14 +25,26 @@ func TestItemGRPC(t *testing.T) {
 		assert.EqualValues(t, "Book", res.Title)
 	})
 
-	t.Run("empty request", func(t *testing.T) {
+	t.Run("invalid request", func(t *testing.T) {
 		t.Parallel()
 
-		req := item.GetItemRequest{}
+		testCases := []struct {
+			name string
+			req  item.GetItemRequest
+		}{
+			{name: "zero value", req: item.GetItemRequest{}},
+			{name: "negative value", req: item.GetItemRequest{Id: -1}},
+			{name: "max negative value", req: item.GetItemRequest{Id: math.MinInt64}},
+		}
+		for _, tc := range testCases {
+			tc := tc
+			t.Run(tc.name, func(t *testing.T) {
+				_, err := api.Item(&tc.req)
 
-		_, err := api.Item(&req)
+				require.Error(t, err)
+				require.Contains(t, err.Error(), "wrong id")
+			})
+		}
 
-		require.Error(t, err)
-		require.Contains(t, err.Error(), "wrong id")
 	})
 }
