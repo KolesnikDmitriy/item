@@ -21,8 +21,8 @@ run:
 
 .PHONY: test
 test:
-	go test ./test/tests -count=1
+	go test ./test/tests -count=1 -tags e2e
 
 .PHONY: test-ci
 test-ci:
-	go test ./test/tests -count=1 -v -json
+	go test ./test/tests -count=1 -tags e2e -v -json
