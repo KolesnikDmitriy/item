@@ -16,7 +16,7 @@ import (
 func TestItemGRPC(t *testing.T) {
 	t.Parallel()
 
-	t.Run("valid id", func(t *testing.T) {
+	t.Run("should return valid description and title by valid id", func(t *testing.T) {
 		t.Parallel()
 
 		req := item.GetItemRequest{Id: 1}
@@ -24,11 +24,12 @@ func TestItemGRPC(t *testing.T) {
 		res, err := api.Item(&req)
 
 		require.NoError(t, err)
-		assert.EqualValues(t, "Very Great Book", res.Description)
-		assert.EqualValues(t, "Book", res.Title)
+		require.NotNil(t, res)
+		assert.Equal(t, "Book", res.Title)
+		assert.Equal(t, "Very Great Book", res.Description)
 	})
 
-	t.Run("invalid request", func(t *testing.T) {
+	t.Run("should retrun error by invalid request", func(t *testing.T) {
 		t.Parallel()
 
 		testCases := []struct {

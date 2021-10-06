@@ -17,7 +17,7 @@ import (
 func TestItemREST(t *testing.T) {
 	t.Parallel()
 
-	t.Run("valid id", func(t *testing.T) {
+	t.Run("should return valid description and title by valid id", func(t *testing.T) {
 		t.Parallel()
 
 		res, err := http.Get(fmt.Sprintf("http://%v/v1/item/1", cfg.RestUrl))
@@ -34,11 +34,11 @@ func TestItemREST(t *testing.T) {
 		}
 		err = json.Unmarshal(body, &item)
 		require.NoError(t, err)
-		assert.EqualValues(t, "Very Great Book", item.Description)
-		assert.EqualValues(t, "Book", item.Title)
+		assert.Equal(t, "Book", item.Title)
+		assert.Equal(t, "Very Great Book", item.Description)
 	})
 
-	t.Run("empty request", func(t *testing.T) {
+	t.Run("should retrun error by invalid request", func(t *testing.T) {
 		t.Parallel()
 
 		res, err := http.Get(fmt.Sprintf("http://%v/v1/item/0", cfg.RestUrl))
