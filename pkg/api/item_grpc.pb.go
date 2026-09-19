@@ -22,7 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ItemClient interface {
-	GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemResponce, error)
+	GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemResponse, error)
+	PostItem(ctx context.Context, in *PostItemRequest, opts ...grpc.CallOption) (*PostItemResponse, error)
 }
 
 type itemClient struct {
@@ -33,9 +34,18 @@ func NewItemClient(cc grpc.ClientConnInterface) ItemClient {
 	return &itemClient{cc}
 }
 
-func (c *itemClient) GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemResponce, error) {
-	out := new(GetItemResponce)
+func (c *itemClient) GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemResponse, error) {
+	out := new(GetItemResponse)
 	err := c.cc.Invoke(ctx, "/item.Item/GetItem", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *itemClient) PostItem(ctx context.Context, in *PostItemRequest, opts ...grpc.CallOption) (*PostItemResponse, error) {
+	out := new(PostItemResponse)
+	err := c.cc.Invoke(ctx, "/item.Item/PostItem", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +56,8 @@ func (c *itemClient) GetItem(ctx context.Context, in *GetItemRequest, opts ...gr
 // All implementations must embed UnimplementedItemServer
 // for forward compatibility
 type ItemServer interface {
-	GetItem(context.Context, *GetItemRequest) (*GetItemResponce, error)
+	GetItem(context.Context, *GetItemRequest) (*GetItemResponse, error)
+	PostItem(context.Context, *PostItemRequest) (*PostItemResponse, error)
 	mustEmbedUnimplementedItemServer()
 }
 
@@ -54,8 +65,11 @@ type ItemServer interface {
 type UnimplementedItemServer struct {
 }
 
-func (UnimplementedItemServer) GetItem(context.Context, *GetItemRequest) (*GetItemResponce, error) {
+func (UnimplementedItemServer) GetItem(context.Context, *GetItemRequest) (*GetItemResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetItem not implemented")
+}
+func (UnimplementedItemServer) PostItem(context.Context, *PostItemRequest) (*PostItemResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostItem not implemented")
 }
 func (UnimplementedItemServer) mustEmbedUnimplementedItemServer() {}
 
@@ -88,6 +102,24 @@ func _Item_GetItem_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Item_PostItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostItemRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ItemServer).PostItem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/item.Item/PostItem",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ItemServer).PostItem(ctx, req.(*PostItemRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Item_ServiceDesc is the grpc.ServiceDesc for Item service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var Item_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetItem",
 			Handler:    _Item_GetItem_Handler,
+		},
+		{
+			MethodName: "PostItem",
+			Handler:    _Item_PostItem_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

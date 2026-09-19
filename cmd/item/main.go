@@ -21,7 +21,8 @@ func main() {
 		log.Fatalf("failed to Listen: %v", err)
 	}
 	server := grpc.NewServer()
-	app.RegisterNewItemService(server)
+	svc := app.NewItemService()
+	pb.RegisterItemServer(server, svc)
 	go func() {
 		if err := server.Serve(lis); err != nil {
 			log.Fatalf("failed to Serve: %v", err)
@@ -29,7 +30,7 @@ func main() {
 	}()
 
 	mux := runtime.NewServeMux()
-	err = pb.RegisterItemHandlerServer(ctx, mux, app.NewItemService())
+	err = pb.RegisterItemHandlerServer(ctx, mux, svc)
 	if err != nil {
 		log.Fatalf("failed to RegisterItemHandlerServer: %v", err)
 	}

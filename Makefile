@@ -17,12 +17,4 @@ generate:
 
 .PHONY: run
 run:
-	go run ./cmd/item/main.go
-
-.PHONY: test
-test:
-	go test ./test/tests -count=1 -tags e2e
-
-.PHONY: test-ci
-test-ci:
-	go test ./test/tests -count=1 -tags e2e -v -json
+	go run ./cmd/item

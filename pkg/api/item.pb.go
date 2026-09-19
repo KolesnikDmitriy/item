@@ -66,7 +66,7 @@ func (x *GetItemRequest) GetId() int64 {
 	return 0
 }
 
-type GetItemResponce struct {
+type GetItemResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Title         string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
 	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
@@ -74,20 +74,20 @@ type GetItemResponce struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetItemResponce) Reset() {
-	*x = GetItemResponce{}
+func (x *GetItemResponse) Reset() {
+	*x = GetItemResponse{}
 	mi := &file_api_item_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetItemResponce) String() string {
+func (x *GetItemResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetItemResponce) ProtoMessage() {}
+func (*GetItemResponse) ProtoMessage() {}
 
-func (x *GetItemResponce) ProtoReflect() protoreflect.Message {
+func (x *GetItemResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_item_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -99,23 +99,119 @@ func (x *GetItemResponce) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetItemResponce.ProtoReflect.Descriptor instead.
-func (*GetItemResponce) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetItemResponse.ProtoReflect.Descriptor instead.
+func (*GetItemResponse) Descriptor() ([]byte, []int) {
 	return file_api_item_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetItemResponce) GetTitle() string {
+func (x *GetItemResponse) GetTitle() string {
 	if x != nil {
 		return x.Title
 	}
 	return ""
 }
 
-func (x *GetItemResponce) GetDescription() string {
+func (x *GetItemResponse) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
+}
+
+type PostItemRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Title         string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PostItemRequest) Reset() {
+	*x = PostItemRequest{}
+	mi := &file_api_item_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PostItemRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PostItemRequest) ProtoMessage() {}
+
+func (x *PostItemRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_item_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PostItemRequest.ProtoReflect.Descriptor instead.
+func (*PostItemRequest) Descriptor() ([]byte, []int) {
+	return file_api_item_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PostItemRequest) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *PostItemRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+type PostItemResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PostItemResponse) Reset() {
+	*x = PostItemResponse{}
+	mi := &file_api_item_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PostItemResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PostItemResponse) ProtoMessage() {}
+
+func (x *PostItemResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_item_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PostItemResponse.ProtoReflect.Descriptor instead.
+func (*PostItemResponse) Descriptor() ([]byte, []int) {
+	return file_api_item_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PostItemResponse) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
 }
 
 var File_api_item_proto protoreflect.FileDescriptor
@@ -125,11 +221,17 @@ const file_api_item_proto_rawDesc = "" +
 	"\x0eapi/item.proto\x12\x04item\x1a\x1cgoogle/api/annotations.proto\" \n" +
 	"\x0eGetItemRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"I\n" +
-	"\x0fGetItemResponce\x12\x14\n" +
+	"\x0fGetItemResponse\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription2U\n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\"I\n" +
+	"\x0fPostItemRequest\x12\x14\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\"\"\n" +
+	"\x10PostItemResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id2\xa5\x01\n" +
 	"\x04Item\x12M\n" +
-	"\aGetItem\x12\x14.item.GetItemRequest\x1a\x15.item.GetItemResponce\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/v1/item/{id}B*Z(github.com/KolesnikDmitriy/item/api;itemb\x06proto3"
+	"\aGetItem\x12\x14.item.GetItemRequest\x1a\x15.item.GetItemResponse\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/v1/item/{id}\x12N\n" +
+	"\bPostItem\x12\x15.item.PostItemRequest\x1a\x16.item.PostItemResponse\"\x13\x82\xd3\xe4\x93\x02\r:\x01*\"\b/v1/itemB*Z(github.com/KolesnikDmitriy/item/api;itemb\x06proto3"
 
 var (
 	file_api_item_proto_rawDescOnce sync.Once
@@ -143,16 +245,20 @@ func file_api_item_proto_rawDescGZIP() []byte {
 	return file_api_item_proto_rawDescData
 }
 
-var file_api_item_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_api_item_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_api_item_proto_goTypes = []any{
-	(*GetItemRequest)(nil),  // 0: item.GetItemRequest
-	(*GetItemResponce)(nil), // 1: item.GetItemResponce
+	(*GetItemRequest)(nil),   // 0: item.GetItemRequest
+	(*GetItemResponse)(nil),  // 1: item.GetItemResponse
+	(*PostItemRequest)(nil),  // 2: item.PostItemRequest
+	(*PostItemResponse)(nil), // 3: item.PostItemResponse
 }
 var file_api_item_proto_depIdxs = []int32{
 	0, // 0: item.Item.GetItem:input_type -> item.GetItemRequest
-	1, // 1: item.Item.GetItem:output_type -> item.GetItemResponce
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	2, // 1: item.Item.PostItem:input_type -> item.PostItemRequest
+	1, // 2: item.Item.GetItem:output_type -> item.GetItemResponse
+	3, // 3: item.Item.PostItem:output_type -> item.PostItemResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -169,7 +275,7 @@ func file_api_item_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_item_proto_rawDesc), len(file_api_item_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

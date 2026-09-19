@@ -5,9 +5,15 @@ option go_package = "github.com/KolesnikDmitriy/item/api;item";
 import "google/api/annotations.proto";
 
 service Item {
-    rpc GetItem(GetItemRequest) returns (GetItemResponce) {
+    rpc GetItem(GetItemRequest) returns (GetItemResponse) {
         option (google.api.http) = {
             get: "/v1/item/{id}"
+        };
+    };
+    rpc PostItem(PostItemRequest) returns (PostItemResponse) {
+        option (google.api.http) = {
+            post: "/v1/item"
+            body: "*"
         };
     };
 }
@@ -16,7 +22,16 @@ message GetItemRequest{
     int64 id = 1;
 }
 
-message GetItemResponce{
+message GetItemResponse{
     string title = 1;
     string description = 2;
+}
+
+message PostItemRequest{
+    string title = 1;
+    string description = 2;
+}
+
+message PostItemResponse{
+    int64 id = 1;
 }
