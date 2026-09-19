@@ -6,11 +6,10 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-
 	"github.com/KolesnikDmitriy/item/internal/app"
 	pb "github.com/KolesnikDmitriy/item/pkg/api"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -34,7 +33,20 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to RegisterItemHandlerServer: %v", err)
 	}
-	if err := http.ListenAndServe(":50052", mux); err != nil {
+
+	httpMux := http.NewServeMux()
+	httpMux.Handle("GET /docs/", serveBytes("text/html; charset=utf-8", docsHTML))
+	httpMux.Handle("GET /swagger.json", serveBytes("application/json", pb.SwaggerJSON))
+	httpMux.Handle("/", mux)
+
+	if err := http.ListenAndServe(":50052", httpMux); err != nil {
 		log.Fatalf("failed to ListenAndServe: %v", err)
 	}
+}
+
+func serveBytes(contentType string, body []byte) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", contentType)
+		_, _ = w.Write(body)
+	})
 }

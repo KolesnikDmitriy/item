@@ -1,9 +1,8 @@
 package app
 
 import (
-	"google.golang.org/grpc"
-
 	pb "github.com/KolesnikDmitriy/item/pkg/api"
+	"google.golang.org/grpc"
 )
 
 // ItemService ...
