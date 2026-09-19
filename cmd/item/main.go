@@ -10,6 +10,7 @@ import (
 	pb "github.com/KolesnikDmitriy/item/pkg/api"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
@@ -21,6 +22,7 @@ func main() {
 		log.Fatalf("failed to Listen: %v", err)
 	}
 	server := grpc.NewServer()
+	reflection.Register(server)
 	svc := app.NewItemService()
 	pb.RegisterItemServer(server, svc)
 	go func() {
@@ -36,7 +38,7 @@ func main() {
 	}
 
 	httpMux := http.NewServeMux()
-	httpMux.Handle("GET /docs/", serveBytes("text/html; charset=utf-8", docsHTML))
+	httpMux.Handle("GET /docs/{$}", serveBytes("text/html; charset=utf-8", docsHTML))
 	httpMux.Handle("GET /swagger.json", serveBytes("application/json", pb.SwaggerJSON))
 	httpMux.Handle("/", mux)
 

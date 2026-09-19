@@ -8,6 +8,9 @@ import (
 type ItemService struct {
 	pb.ItemServer
 
+	// items и nextID намеренно используются без синхронизации — учебное упрощение:
+	// параллельные запросы к PostItem/GetItem дают data race.
+	// В реальном коде нужен sync.RWMutex (или sync.Map).
 	items  map[int64]*pb.GetItemResponse
 	nextID int64
 }
