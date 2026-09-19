@@ -5,7 +5,7 @@ version:
 
 .PHONY: generate
 generate:
-	protoc -I ./ \
+	protoc -I ./ -I ./third_party/googleapis \
 		--go_out ./pkg --go_opt paths=source_relative \
     	--go-grpc_out ./pkg --go-grpc_opt paths=source_relative \
 		--grpc-gateway_out ./pkg \
