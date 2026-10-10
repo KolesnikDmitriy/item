@@ -15,6 +15,22 @@ generate:
 		--openapiv2_opt logtostderr=true \
 		api/item.proto
 
+.PHONY: test
+test:
+	go test ./...
+
+.PHONY: test-api
+test-api:
+	go test -v -count=1 -tags=api ./test/
+
+.PHONY: test-race
+test-race:
+	go test -race ./...
+
+.PHONY: bench
+bench:
+	go test -bench=. -benchmem ./internal/app/
+
 .PHONY: run
 run:
 	go run ./cmd/item
