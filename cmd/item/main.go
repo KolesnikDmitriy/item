@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/KolesnikDmitriy/item/internal/analytics"
 	"github.com/KolesnikDmitriy/item/internal/app"
 	pb "github.com/KolesnikDmitriy/item/pkg/api"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -23,7 +24,11 @@ func main() {
 	}
 	server := grpc.NewServer()
 	reflection.Register(server)
-	svc := app.NewItemService()
+
+	an := analytics.New()
+	go an.Run(ctx)
+
+	svc := app.NewItemService(an)
 	pb.RegisterItemServer(server, svc)
 	go func() {
 		if err := server.Serve(lis); err != nil {

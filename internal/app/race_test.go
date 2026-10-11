@@ -15,7 +15,7 @@ import (
 func TestConcurrentPostItem(t *testing.T) {
 	t.Parallel()
 
-	svc := NewItemService()
+	svc := NewItemService(nil)
 	ctx := context.Background()
 
 	var wg sync.WaitGroup

@@ -39,7 +39,7 @@ func TestGetItem(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			svc := NewItemService()
+			svc := NewItemService(nil)
 
 			got, err := svc.GetItem(context.Background(), &pb.GetItemRequest{Id: tt.id})
 
@@ -53,7 +53,7 @@ func TestGetItem(t *testing.T) {
 func TestGetItemSuccess(t *testing.T) {
 	t.Parallel()
 
-	svc := NewItemService()
+	svc := NewItemService(nil)
 	svc.items[1] = &pb.GetItemResponse{Title: "Book", Description: "Very Great Book"}
 
 	got, err := svc.GetItem(context.Background(), &pb.GetItemRequest{Id: 1})
@@ -87,7 +87,7 @@ func TestPostItem(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			svc := NewItemService()
+			svc := NewItemService(nil)
 
 			got, err := svc.PostItem(context.Background(), &pb.PostItemRequest{
 				Title:       tt.title,
@@ -104,7 +104,7 @@ func TestPostItem(t *testing.T) {
 func TestPostItemSuccess(t *testing.T) {
 	t.Parallel()
 
-	svc := NewItemService()
+	svc := NewItemService(nil)
 
 	got, err := svc.PostItem(context.Background(), &pb.PostItemRequest{
 		Title:       "Book",
@@ -118,7 +118,7 @@ func TestPostItemSuccess(t *testing.T) {
 func TestPostItemIncrementID(t *testing.T) {
 	t.Parallel()
 
-	svc := NewItemService()
+	svc := NewItemService(nil)
 	ctx := context.Background()
 
 	first, err := svc.PostItem(ctx, &pb.PostItemRequest{Title: "a", Description: "b"})
@@ -132,7 +132,7 @@ func TestPostItemIncrementID(t *testing.T) {
 func TestPostGetFlow(t *testing.T) {
 	t.Parallel()
 
-	svc := NewItemService()
+	svc := NewItemService(nil)
 	ctx := context.Background()
 
 	post, err := svc.PostItem(ctx, &pb.PostItemRequest{Title: "Book", Description: "Very Great Book"})
@@ -144,7 +144,7 @@ func TestPostGetFlow(t *testing.T) {
 }
 
 func BenchmarkPostItem(b *testing.B) {
-	svc := NewItemService()
+	svc := NewItemService(nil)
 	ctx := context.Background()
 	req := &pb.PostItemRequest{Title: "Book", Description: "Very Great Book"}
 
@@ -158,7 +158,7 @@ func BenchmarkPostItem(b *testing.B) {
 }
 
 func BenchmarkGetItem(b *testing.B) {
-	svc := NewItemService()
+	svc := NewItemService(nil)
 	ctx := context.Background()
 	post, err := svc.PostItem(ctx, &pb.PostItemRequest{Title: "Book", Description: "Very Great Book"})
 	if err != nil {
