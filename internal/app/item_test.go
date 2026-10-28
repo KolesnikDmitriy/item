@@ -2,16 +2,51 @@ package app
 
 import (
 	"context"
+	"sync"
+	"sync/atomic"
 	"testing"
 
+	"github.com/KolesnikDmitriy/item/internal/domain"
 	pb "github.com/KolesnikDmitriy/item/pkg/api"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
+type MemoryStorage struct {
+	mu    sync.RWMutex
+	items map[int64]domain.Item
+	next  atomic.Int64
+}
+
+// NewMemoryStorage ...
+func NewMemoryStorage() *MemoryStorage {
+	return &MemoryStorage{items: make(map[int64]domain.Item, 8)}
+}
+
+func (s *MemoryStorage) Get(_ context.Context, id int64) (domain.Item, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	it, ok := s.items[id]
+	if !ok {
+		return domain.Item{}, status.Error(codes.NotFound, "item not found")
+	}
+	return it, nil
+}
+
+func (s *MemoryStorage) Add(_ context.Context, item domain.Item) (int64, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	id := s.next.Add(1)
+	s.items[id] = domain.Item{Title: item.Title, Description: item.Description}
+	return id, nil
+}
+
 func TestGetItem(t *testing.T) {
 	t.Parallel()
+	st := NewMemoryStorage()
 
 	tests := []struct {
 		name string
@@ -39,7 +74,7 @@ func TestGetItem(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			svc := NewItemService(nil)
+			svc := NewItemService(st, nil)
 
 			got, err := svc.GetItem(context.Background(), &pb.GetItemRequest{Id: tt.id})
 
@@ -52,11 +87,15 @@ func TestGetItem(t *testing.T) {
 
 func TestGetItemSuccess(t *testing.T) {
 	t.Parallel()
+	st := NewMemoryStorage()
+	svc := NewItemService(st, nil)
+	postRes, postErr := svc.PostItem(context.Background(), &pb.PostItemRequest{
+		Title:       "Book",
+		Description: "Very Great Book",
+	})
+	require.NoError(t, postErr)
 
-	svc := NewItemService(nil)
-	svc.items[1] = &pb.GetItemResponse{Title: "Book", Description: "Very Great Book"}
-
-	got, err := svc.GetItem(context.Background(), &pb.GetItemRequest{Id: 1})
+	got, err := svc.GetItem(context.Background(), &pb.GetItemRequest{Id: postRes.Id})
 
 	require.NoError(t, err)
 	require.Equal(t, &pb.GetItemResponse{Title: "Book", Description: "Very Great Book"}, got)
@@ -64,6 +103,7 @@ func TestGetItemSuccess(t *testing.T) {
 
 func TestPostItem(t *testing.T) {
 	t.Parallel()
+	st := NewMemoryStorage()
 
 	tests := []struct {
 		name        string
@@ -87,7 +127,7 @@ func TestPostItem(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			svc := NewItemService(nil)
+			svc := NewItemService(st, nil)
 
 			got, err := svc.PostItem(context.Background(), &pb.PostItemRequest{
 				Title:       tt.title,
@@ -103,8 +143,8 @@ func TestPostItem(t *testing.T) {
 
 func TestPostItemSuccess(t *testing.T) {
 	t.Parallel()
-
-	svc := NewItemService(nil)
+	st := NewMemoryStorage()
+	svc := NewItemService(st, nil)
 
 	got, err := svc.PostItem(context.Background(), &pb.PostItemRequest{
 		Title:       "Book",
@@ -117,8 +157,8 @@ func TestPostItemSuccess(t *testing.T) {
 
 func TestPostItemIncrementID(t *testing.T) {
 	t.Parallel()
-
-	svc := NewItemService(nil)
+	st := NewMemoryStorage()
+	svc := NewItemService(st, nil)
 	ctx := context.Background()
 
 	first, err := svc.PostItem(ctx, &pb.PostItemRequest{Title: "a", Description: "b"})
@@ -131,8 +171,8 @@ func TestPostItemIncrementID(t *testing.T) {
 
 func TestPostGetFlow(t *testing.T) {
 	t.Parallel()
-
-	svc := NewItemService(nil)
+	st := NewMemoryStorage()
+	svc := NewItemService(st, nil)
 	ctx := context.Background()
 
 	post, err := svc.PostItem(ctx, &pb.PostItemRequest{Title: "Book", Description: "Very Great Book"})
@@ -144,7 +184,8 @@ func TestPostGetFlow(t *testing.T) {
 }
 
 func BenchmarkPostItem(b *testing.B) {
-	svc := NewItemService(nil)
+	st := NewMemoryStorage()
+	svc := NewItemService(st, nil)
 	ctx := context.Background()
 	req := &pb.PostItemRequest{Title: "Book", Description: "Very Great Book"}
 
@@ -158,7 +199,8 @@ func BenchmarkPostItem(b *testing.B) {
 }
 
 func BenchmarkGetItem(b *testing.B) {
-	svc := NewItemService(nil)
+	st := NewMemoryStorage()
+	svc := NewItemService(st, nil)
 	ctx := context.Background()
 	post, err := svc.PostItem(ctx, &pb.PostItemRequest{Title: "Book", Description: "Very Great Book"})
 	if err != nil {

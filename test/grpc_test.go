@@ -19,9 +19,6 @@ func TestItemServiceOverNetwork(t *testing.T) {
 	ctx := context.Background()
 
 	post, err := client.PostItem(ctx, &pb.PostItemRequest{Title: "Book", Description: "Very Great Book"})
-	if status.Code(err) == codes.Unavailable {
-		t.Skipf("сервис %s не запущен — выполните make run: %v", target, err)
-	}
 	require.NoError(t, err)
 	require.NotZero(t, post.Id)
 

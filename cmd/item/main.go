@@ -5,9 +5,11 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 
 	"github.com/KolesnikDmitriy/item/internal/analytics"
 	"github.com/KolesnikDmitriy/item/internal/app"
+	"github.com/KolesnikDmitriy/item/internal/storage"
 	pb "github.com/KolesnikDmitriy/item/pkg/api"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -17,6 +19,17 @@ import (
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	dsn := os.Getenv("ITEM_DB_URL")
+	if dsn == "" {
+		log.Fatalf("ITEM_DB_URL is required")
+	}
+
+	db, err := storage.New(ctx, dsn)
+	if err != nil {
+		log.Fatalf("failed to connect to db: %v", err)
+	}
+	defer db.Close()
 
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
@@ -28,7 +41,7 @@ func main() {
 	an := analytics.New()
 	go an.Run(ctx)
 
-	svc := app.NewItemService(an)
+	svc := app.NewItemService(db, an)
 	pb.RegisterItemServer(server, svc)
 	go func() {
 		if err := server.Serve(lis); err != nil {

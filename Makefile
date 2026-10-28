@@ -1,3 +1,5 @@
+DB_URL ?= postgres://postgres:postgres@localhost:5432/item?sslmode=disable
+
 .PHONY: version
 version:
 	go version
@@ -34,3 +36,15 @@ bench:
 .PHONY: run
 run:
 	go run ./cmd/item
+
+.PHONY: migrate-up
+migrate-up:
+	go tool goose -dir migrations postgres "$(DB_URL)" up
+
+.PHONY: migrate-down
+migrate-down:
+	go tool goose -dir migrations postgres "$(DB_URL)" down
+
+.PHONY: migrate-status
+migrate-status:
+	go tool goose -dir migrations postgres "$(DB_URL)" status
